@@ -2,18 +2,19 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 
 class Visualizador:
-    def __init__(self, datos):
-        # Guardar el DataFrame para su uso en métodos de visualización
-        self.datos = datos
-
+    def __init__(self, df):
+        self.df = df
+    
     def graficar_casos_por_fecha(self):
-        # Crear visualización de casos diarios y muertes por fecha de inicio de síntomas
-        datos_agrupados = self.datos.groupby('fecha_inicio_sintomas').size().reset_index(name='casos')
-        datos_muertes = self.datos[self.datos['fallecido'] == 'SI'].groupby('fecha_inicio_sintomas').size().reset_index(name='muertes')
+        """
+        Crea una visualización de casos diarios y muertes por fecha de inicio de síntomas.
+        """
+        df_grouped = self.df.groupby('fecha_inicio_sintomas').size().reset_index(name='cases')
+        df_deaths = self.df[self.df['fallecido'] == 'SI'].groupby('fecha_inicio_sintomas').size().reset_index(name='deaths')
 
         plt.figure(figsize=(14, 7))
-        sns.lineplot(data=datos_agrupados, x='fecha_inicio_sintomas', y='casos', label='Casos Diarios')
-        sns.lineplot(data=datos_muertes, x='fecha_inicio_sintomas', y='muertes', label='Muertes Diarias', color='red')
+        sns.lineplot(data=df_grouped, x='fecha_inicio_sintomas', y='cases', label='Casos Diarios')
+        sns.lineplot(data=df_deaths, x='fecha_inicio_sintomas', y='deaths', label='Muertes Diarias', color='red')
         plt.title('Evolución Diaria de Casos y Muertes por COVID-19')
         plt.xlabel('Fecha de Inicio de Síntomas')
         plt.ylabel('Número de Casos/Muertes')
@@ -21,38 +22,38 @@ class Visualizador:
         plt.show()
 
     def graficar_casos_por_genero(self):
-        # Crear visualización de casos por género
-        datos_genero = self.datos.groupby('sexo').size().reset_index(name='casos')
+        """
+        Crea una visualización de casos por género.
+        """
+        df_gender = self.df.groupby('sexo').size().reset_index(name='cases')
 
         plt.figure(figsize=(10, 6))
-        sns.barplot(data=datos_genero, x='sexo', y='casos')
+        sns.barplot(data=df_gender, x='sexo', y='cases')
         plt.title('Número de Casos por Género')
         plt.xlabel('Género')
         plt.ylabel('Número de Casos')
         plt.show()
 
-    def graficar_casos_por_edad(self):
-        # Limitar la edad entre 0 y 99
-        datos_filtrados = self.datos[(self.datos['edad'] >= 0) & (self.datos['edad'] <= 99)]
-        
-        # Crear visualización de casos por edad
+    def graficar_casos_por_edad(self, edad_min=0, edad_max=99):
+        """
+        Crea una visualización de casos por grupo etario, limitando la distribución por edad.
+        """
         plt.figure(figsize=(14, 7))
-        sns.histplot(datos_filtrados['edad'], bins=30, kde=True)
-        plt.title('Distribución de Casos por Edad (0-99)')
+        sns.histplot(self.df[(self.df['edad'] >= edad_min) & (self.df['edad'] <= edad_max)]['edad'], bins=30, kde=True)
+        plt.title('Distribución de Casos por Edad')
         plt.xlabel('Edad')
         plt.ylabel('Número de Casos')
         plt.show()
 
     def graficar_tasa_mortalidad_por_provincia(self):
-        # Crear visualización de la tasa de mortalidad por provincia
-        datos_provincias = self.datos.groupby('residencia_provincia_nombre').agg({
-            'fallecido': lambda x: (x == 'SI').sum(), 
-            'id_evento_caso': 'size'
-        }).reset_index()
-        datos_provincias['tasa_mortalidad'] = datos_provincias['fallecido'] / datos_provincias['id_evento_caso'] * 100
+        """
+        Crea una visualización de la tasa de mortalidad por provincia.
+        """
+        df_provinces = self.df.groupby('residencia_provincia_nombre').agg({'fallecido': lambda x: (x == 'SI').sum(), 'id_evento_caso': 'size'}).reset_index()
+        df_provinces['death_rate'] = df_provinces['fallecido'] / df_provinces['id_evento_caso'] * 100
 
         plt.figure(figsize=(14, 7))
-        sns.barplot(data=datos_provincias, x='tasa_mortalidad', y='residencia_provincia_nombre', orient='h')
+        sns.barplot(data=df_provinces, x='death_rate', y='residencia_provincia_nombre', orient='h')
         plt.title('Tasa de Mortalidad por Provincia')
         plt.xlabel('Tasa de Mortalidad (%)')
         plt.ylabel('Provincia')
