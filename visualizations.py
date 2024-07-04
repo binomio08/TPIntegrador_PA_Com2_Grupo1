@@ -2,7 +2,7 @@ import pandas as pd
 
 def cargar_datos(ruta_archivo):
     """
-    Carga datos desde un archivo CSV y los devuelve como un DataFrame.
+    Carga los datos desde un archivo CSV y los devuelve como un DataFrame.
     """
     datos = pd.read_csv(ruta_archivo, parse_dates=['fecha_inicio_sintomas', 'fecha_apertura', 'fecha_internacion', 'fecha_cui_intensivo', 'fecha_fallecimiento', 'fecha_diagnostico', 'ultima_actualizacion'])
     
