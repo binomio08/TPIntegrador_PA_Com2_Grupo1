@@ -13,6 +13,9 @@ La aplicación tiene como objetivo cargar datos de COVID-19 desde un archivo CSV
 - seaborn
 - matplotlib
 
+## Importante
+Para que funcione se debe crear la carpeta data y dentro poner el archivo "Covid19Casos.csv".
+
 ## Instalación
 Instala las dependencias necesarias con:
 ```bash
