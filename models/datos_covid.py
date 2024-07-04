@@ -2,7 +2,7 @@ import pandas as pd
 
 class DatosCovid:
     def __init__(self, ruta_archivo):
-        # Cargar datos desde un archivo CSV
+        # Cargar los datos desde un archivo CSV
         self.datos = pd.read_csv(ruta_archivo, parse_dates=[
             'fecha_inicio_sintomas', 'fecha_apertura', 'fecha_internacion', 
             'fecha_cui_intensivo', 'fecha_fallecimiento', 'fecha_diagnostico', 
@@ -10,7 +10,7 @@ class DatosCovid:
         self._convertir_fechas()
 
     def _convertir_fechas(self):
-        # Convertir columnas de fecha a formato datetime
+        # Convierte las columnas de fecha a formato datetime
         columnas_fecha = ['fecha_inicio_sintomas', 'fecha_apertura', 'fecha_internacion', 
                           'fecha_cui_intensivo', 'fecha_fallecimiento', 'fecha_diagnostico', 
                           'ultima_actualizacion']
